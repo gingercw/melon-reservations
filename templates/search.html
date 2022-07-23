@@ -4,12 +4,25 @@
 {% block body %}
   <a href="/logout">Log Out</a>
   <h1>Find a Time!</h1>
+  <p>Enter an optimal time range, and we will find available appointments.</p>
 
 
-  <form action="/templates">
-    <input type="search" name="template_search" id="templateSearch" placeholder="Find a time..."/>
-    <button class="btn btn-primary" type="submit">Search</button>
-    <a href="/templates">Clear</a>
+  <form action="/gettimes" method="POST" >
+    <div>
+      <label for="day">Date:</label>
+      <input type="date" id="day" name="day"  min="{{today}}" max="2023-12-31" required>
+    </div>
+    <div>
+      <label for="start-time">Start time:</label>
+      <input type="time" id="start" name="start" required>
+    </div>
+    <div>
+      <label for="start-time">End time:</label>
+      <input type="time" id="end" name="end" required>
+    </div>
+    <div>
+      <input type="submit">
+    </div>
   </form>
 
 

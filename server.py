@@ -2,7 +2,8 @@ from flask import (Flask, render_template, request, flash, session, redirect, js
 
 from model import connect_to_db, db
 
-from datetime import datetime
+from datetime import date, datetime, time, timedelta
+
 
 
 import crud 
@@ -30,17 +31,14 @@ def index():
 def signin():
     """sign in existing user"""
     user_name = request.form.get("user_name")
-    user_info = crud.get_user_by_name(user_name)
+    user = crud.get_user_by_name(user_name)
 
-    if user_name == user_info.name:
-        session["user_id"] = user_info.user_id
-        return redirect(f"/search/{user_info.user_id}")
-    elif user_info is None:
-        new_user = crud.create_user(user_name)
-        db.session.add(new_user)
-        db.session.commit()
-        flash(f"Welcome to Melon Reservations, {user_name}!")
-        return redirect(f"/search/{name_user.user_id}")
+    if not user:
+        flash(f"Sorry! That name isn't in our system. Check the name and try again.")
+        return redirect("/")
+    elif user_name == user.name:
+        session["user_id"] = user.user_id
+        return redirect(f"/search")
 
 @app.route("/logout")
 def logout():
@@ -49,18 +47,41 @@ def logout():
     flash("You logged out.")
     return redirect("/")
 
-@app.route('/search/<user_id>')
-def find_available_times(user_id):
-    """show user profile page with created cards"""
-    user = crud.get_user_by_id(user_id)
-    user_id = session.get("user_id")
-    return render_template("search.html", user_id = user_id)
+@app.route('/search')
+def show_search():
+    """show date time search inputs"""
+    today = date.today()
+    return render_template("search.html", today = today)
 
-@app.route('/booking/<user_id>')
-def make_appointment(user_id):
+@app.route('/gettimes', methods=["POST"])
+def get_times():
+    form_day = request.form.get("day")
+    form_start = request.form.get("start")
+    form_end = request.form.get("end")
+
+    raw_start = datetime.strptime(form_day + " " + form_start, '%Y-%m-%d %H:%M')
+
+    start = raw_start + (datetime.min - raw_start) % timedelta(minutes=30)
+
+    end = datetime.strptime(form_day + " " + form_end, '%Y-%m-%d %H:%M')
+
+    timeslots = []
+
+    while start < end:
+        timeslots.append(start)
+        start += timedelta(minutes=30)
+
+    return redirect("/booking")
+
+
+
+@app.route('/booking')
+def make_appointment():
     """show user profile page with created cards"""
-    user = crud.get_user_by_id(user_id)
-    return render_template("search.html", user = user)
+
+    return render_template("booking.html")
+
+
 
 @app.route('/appointments/<user_id>')
 def get_user_reservations(user_id):
