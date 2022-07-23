@@ -11,12 +11,20 @@ def create_user(name):
 
     return user
 
+def get_user_by_id(user_id):
+    """returns user's id"""
+    return User.query.get(user_id)
+
 def create_appointment(time, user):
     """Create and return a new appointment."""
 
     appointment = Appointment(time = time, user = user)
 
     return appointment
+
+def get_appointments_by_user(user_id):
+    """returns all appointments from a user"""
+    return Appointment.query.filter_by(user_id = user_id).order_by(appointment.time.desc()).all()
 
 if __name__ == '__main__':
     from server import app

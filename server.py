@@ -17,6 +17,37 @@ app = Flask(__name__)
 app.secret_key = "APIKEY"
 app.jinja_env.undefined = StrictUndefined
 
+@app.route('/')
+def index():
+    """go to homepage if a user is not already logged in"""
+    if "user_id" in session:
+        user_id = session.get("user_id")
+        return redirect(f"/search/{user_id}")
+    else:
+        return render_template("index.html")
+
+
+@app.route('/search/<user_id>')
+def find_available_times(user_id):
+    """show user profile page with created cards"""
+    user = crud.get_user_by_id(user_id)
+    return render_template("search.html", user = user)
+
+@app.route('/booking/<user_id>')
+def make_appointment(user_id):
+    """show user profile page with created cards"""
+    user = crud.get_user_by_id(user_id)
+    return render_template("search.html", user = user)
+
+@app.route('/reservations/<user_id>')
+def get_user_reservations(user_id):
+    """show user profile page with created cards"""
+    user = crud.get_user_by_id(user_id)
+    appointments = crud.get_appointments_by_user(user_id)
+    return render_template("reservations.html", user = user, appointments = appointments)
+
+
+
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)
