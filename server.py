@@ -53,7 +53,7 @@ def show_search():
     today = date.today()
     return render_template("search.html", today = today)
 
-@app.route('/gettimes', methods=["POST"])
+@app.route('/booking', methods=["POST"])
 def get_times():
     form_day = request.form.get("day")
     form_start = request.form.get("start")
@@ -68,27 +68,49 @@ def get_times():
     timeslots = []
 
     while start < end:
-        timeslots.append(start)
+        time = start.strftime('%m-%d-%Y %I:%M %p')
+        check_time = crud.get_appointment_by_time(time)
+        if check_time:
+          pass
+        else:
+          timeslots.append(time)
         start += timedelta(minutes=30)
 
-    return redirect("/booking")
+    return render_template("booking.html", form_day = form_day, timeslots = timeslots)
 
+@app.route('/reserve', methods=["POST"])
+def reserve():
+  """adds appointment to database"""
+  user_id = session.get("user_id")
+  form_dt = request.form.get("timeslot")
+  time = datetime.strptime(form_dt, '%m-%d-%Y %I:%M %p')
+  user = crud.get_user_by_id(user_id)
+  new_appt = crud.create_appointment(time, user)
+  db.session.add(new_appt)
+  db.session.commit()
+  flash("Thanks for making a reservation!")
 
-
-@app.route('/booking')
-def make_appointment():
-    """show user profile page with created cards"""
-
-    return render_template("booking.html")
-
+  return redirect(f'/appointments/{ user_id }')
 
 
 @app.route('/appointments/<user_id>')
-def get_user_reservations(user_id):
-    """show user profile page with created cards"""
-    user = crud.get_user_by_id(user_id)
-    appointments = crud.get_appointments_by_user(user_id)
-    return render_template("appointments.html", user = user, appointments = appointments)
+def show_user_reservations(user_id):
+    """show user's appointments'"""
+    user_id = session.get("user_id")
+    raw_appts = crud.get_appointments_by_user(user_id)
+    today = datetime.today()
+    past_appts = []
+    appts = []
+    for appt in raw_appts:
+      if appt.time > today:
+        formatted_time = appt.time.strftime('%m-%d-%Y %I:%M %p')
+        appts.append(formatted_time)
+      else:
+        formatted_time = appt.time.strftime('%m-%d-%Y %I:%M %p')
+        past_appts.append(formatted_time)
+
+
+    return render_template("appointments.html", user_id = user_id, appts = appts, past_appts = past_appts)
 
 
 

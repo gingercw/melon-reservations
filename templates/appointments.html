@@ -4,6 +4,12 @@
 {% block body %}
   <a href="/logout">Log Out</a>
   <h1>Your Appointments</h1>
+  <p>Here are your upcoming appointments.</p>
+  <ul>
+  {% for appt in appts %}
+  <li>{{appt}}</li>
+  {% endfor %}
+  </ul>
 
 
 {% endblock %}

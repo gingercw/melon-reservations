@@ -3,7 +3,21 @@
 
 {% block body %}
   <a href="/logout">Log Out</a>
-  <h1>Make a Reservation</h1>
+  <h1>Reserve a Time</h1>
+  <p>Choose a time on {{form_day}}.</p>
+
+  <form action="/reserve" method="POST">
+    <ul>
+  {% for timeslot in timeslots %}
+  <li>
+    <input type="radio" id="{{timeslot}}" name="timeslot" value="{{timeslot}}">
+    <label for="html">{{timeslot}}</label>
+  </li>
+
+  {% endfor %}
+</ul>
+  <button type="submit" name="book_time">Book Time</button>
+</form>
 
 
 {% endblock %}

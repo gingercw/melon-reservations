@@ -29,7 +29,12 @@ def create_appointment(time, user):
 
 def get_appointments_by_user(user_id):
     """returns all appointments from a user"""
-    return Appointment.query.filter_by(user_id = user_id).order_by(appointment.time.desc()).all()
+    return Appointment.query.filter_by(user_id = user_id).all()
+
+def get_appointment_by_time(time):
+    """return all appointment times"""
+    
+    return Appointment.query.filter(Appointment.time == time).first()
 
 if __name__ == '__main__':
     from server import app
