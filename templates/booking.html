@@ -4,8 +4,14 @@
 {% block body %}
 
   <h1>Reserve a Time</h1>
-  <p>Choose a time on {{form_day}}.</p>
+  <p>Choose a time on for your melon tasting.</p>
 
+  {% if timeslots|length == 0 %}
+  <p>
+    Whoops! Looks like there aren't available tastings at that time. <a href="/search">Choose another time range. </a>
+  </p>
+  </div>
+  {% else %}
   <form action="/reserve" method="POST">
     <ul>
   {% for timeslot in timeslots %}
@@ -19,5 +25,5 @@
   <button type="submit" name="book_time">Book Time</button>
 </form>
 
-
+{%endif%}
 {% endblock %}
