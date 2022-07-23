@@ -23,7 +23,7 @@ def index():
     """go to homepage if a user is not already logged in"""
     if "user_id" in session:
         user_id = session.get("user_id")
-        return redirect(f"/search/{user_id}")
+        return redirect(f"/search")
     else:
         return render_template("index.html")
 
@@ -51,10 +51,12 @@ def logout():
 def show_search():
     """show date time search inputs"""
     today = date.today()
-    return render_template("search.html", today = today)
+    user_id = session.get("user_id")
+    return render_template("search.html", today = today, user_id=user_id)
 
 @app.route('/booking', methods=["POST"])
 def get_times():
+    user_id = session.get("user_id")
     form_day = request.form.get("day")
     form_start = request.form.get("start")
     form_end = request.form.get("end")
@@ -76,7 +78,7 @@ def get_times():
           timeslots.append(time)
         start += timedelta(minutes=30)
 
-    return render_template("booking.html", form_day = form_day, timeslots = timeslots)
+    return render_template("booking.html", form_day = form_day, timeslots = timeslots, user_id=user_id)
 
 @app.route('/reserve', methods=["POST"])
 def reserve():
