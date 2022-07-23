@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Melon Reservations{% endblock %}
+
+{% block body %}
+  <h1>Welcome!</h1>
+
+
+  <h2>Sign In with Your Name</h2>
+  <form action="/signin" method="POST">
+    <p>
+      Name <input type="text" name="user_name">
+    </p>
+
+    <p>
+      <input type="submit">
+    </p>
+  </form>
+
+
+{% endblock %}

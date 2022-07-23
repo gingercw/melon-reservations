@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Melon Reservations{% endblock %}
+
+{% block body %}
+  <a href="/logout">Log Out</a>
+  <h1>Find a Time!</h1>
+
+
+  <form action="/templates">
+    <input type="search" name="template_search" id="templateSearch" placeholder="Find a time..."/>
+    <button class="btn btn-primary" type="submit">Search</button>
+    <a href="/templates">Clear</a>
+  </form>
+
+
+{% endblock %}

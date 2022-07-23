@@ -15,6 +15,11 @@ def get_user_by_id(user_id):
     """returns user's id"""
     return User.query.get(user_id)
 
+def get_user_by_name(name):
+    """returns user"""
+    return User.query.filter(User.name == name).first()
+
+
 def create_appointment(time, user):
     """Create and return a new appointment."""
 
